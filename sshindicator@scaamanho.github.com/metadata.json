@@ -1,7 +1,7 @@
 {
 	"name": "SSH Indicaror",
 	"description": "open ssh consoles in a fast way",
-	"uuid": "sshindicator@scaamanho.gmail.com",
+	"uuid": "sshindicator@scaamanho.github.com",
 	"shell-version": ["3.26", "3.28"],
  	"url": "https://github.com/scaamanho/shhindicator",
  "version": 1

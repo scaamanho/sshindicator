@@ -44,7 +44,7 @@ function init() {}
 //Called when enable extension
 function enable() {
 	_shhIndicator = new SSHIndicator();
-	//Main.panel.addToStatusArea('SSH Indicator', powerCommandsButton, 0, 'right');
+	//Main.panel.addToStatusArea('SSH Indicator', _shhIndicator, 0, 'right');
 	Main.panel.addToStatusArea('SSH Indicator', _shhIndicator, 1, 'center');
 }
 

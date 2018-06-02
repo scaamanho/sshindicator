@@ -13,6 +13,9 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Util = imports.misc.util;
 const Main = imports.ui.main;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Gio = imports.gi.Gio;
+
 
 class SSHIndicator extends PanelMenu.Button {
 
@@ -21,10 +24,15 @@ class SSHIndicator extends PanelMenu.Button {
 
 		let box = new St.BoxLayout();
 
-		let icon = new St.Icon({
-				icon_name: 'bash',
+
+
+		let gicon=Gio.icon_new_for_string(Me.path + "/icon/ssh_indicator.png");
+		let icon = new St.Icon({ gicon: gicon,style_class: 'system-status-icon'});
+
+		/*let icon = new St.Icon({
+				icon_name: 'bash-root',
 				style_class: 'system-status-icon'
-		});
+		});*/
 		box.add(icon);
 		this.actor.add_child(box);
 
@@ -45,7 +53,7 @@ function init() {}
 function enable() {
 	_shhIndicator = new SSHIndicator();
 	//Main.panel.addToStatusArea('SSH Indicator', powerCommandsButton, 0, 'right');
-	Main.panel.addToStatusArea('SSH Indicator', _shhIndicator, 1, 'center');
+	Main.panel.addToStatusArea('SSH Indicator', _shhIndicator, 1, 'right');
 }
 
 //Called when disable extension

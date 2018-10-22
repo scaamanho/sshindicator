@@ -16,30 +16,41 @@ const Main = imports.ui.main;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
 
+//Importamos ficheros locales
+const ExtensionUtils = imports.misc.extensionUtils;
+const Local = ExtensionUtils.getCurrentExtension();
+const Config = Local.imports.config.data;
+
 
 class SSHIndicator extends PanelMenu.Button {
 
 	constructor() {
 		super(St.Align.START);
 
-		let box = new St.BoxLayout();
-
-
+		let box = new St.BoxLayout({style_class: 'BoxLayout'});
 
 		let gicon=Gio.icon_new_for_string(Me.path + "/icon/ssh_indicator.png");
-		let icon = new St.Icon({ gicon: gicon,style_class: 'system-status-icon'});
+		let icon = new St.Icon({ gicon: gicon, style_class: 'system-status-icon'});
 
 		/*let icon = new St.Icon({
 				icon_name: 'bash-root',
 				style_class: 'system-status-icon'
 		});*/
+
 		box.add(icon);
 		this.actor.add_child(box);
 
 		let _self = this;
-		getData().forEach(function (item) {
-				let mitem = buildSSHMenuItem(item);
-				_self.menu.addMenuItem(mitem);
+
+		Config.forEach(function (item) {
+			let mitemGroup = new PopupMenu.PopupSubMenuMenuItem(item.group,{style_class: 'GroupLayout'});
+
+			item.servers.forEach(function (subitem)
+			{
+				let mitem = buildSSHMenuItem(subitem)
+				mitemGroup.menu.addMenuItem(mitem);
+			});
+			_self.menu.addMenuItem(mitemGroup)
 		});
 	}
 }
@@ -62,7 +73,7 @@ function disable() {
 }
 
 function buildSSHMenuItem(item) {
-	let mitem = new PopupMenu.PopupMenuItem(item.name);
+	let mitem = new PopupMenu.PopupMenuItem(item.name,{style_class: 'MenuItemStyle'});
 	mitem.connect('activate', () => {
 		try 
 		{
@@ -89,6 +100,7 @@ function buildSSHMenuItem(item) {
 				command_line.push(item.host);
 			
 			//debugCmdLine(command_line);
+
 			//Execute command line builded from item
 			GLib.spawn_sync(null, command_line , null, GLib.SpawnFlags.SEARCH_PATH, null);
 		} catch (err) {
@@ -105,29 +117,6 @@ function debugCmdLine(cmdLine){
 	});
 	log(command);
 }
-
-
-function getData() {
-	let data = [{
-		name: "SSH 127.0.0.1",
-		host: "127.0.0.1",
-		user: "scaamanho",
-		options: ["-X"]
-	},
-	{
-		name: "SSH[22] 127.0.0.1",
-		host: "127.0.0.1",
-		user: "scaamanho",
-		options: ["-X"],
-		port: 22
-	},
-	{
-		name: "SSH[USR] 127.0.0.1",
-		host: "127.0.0.1"
-	}];
-	return data;
-}
-
 
 /*let argv = [];
 argv = ["gnome-terminal", "-e", "bash -c " + GLib.shell_quote(activeLine.bash + "; exec bash")];
@@ -149,3 +138,4 @@ try {
 		log(err)
 }
 */
+
